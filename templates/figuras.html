@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+ 
+{% block content %}
+{% import "_macros.html" as macro %}
+ 
+<div class="container mt-4">
+    <h1>Calculadora de Áreas</h1>
+ 
+    <form action="" method="POST" class="form-control p-4">
+        <label><input type="radio" name="figura" value="triangulo" required> Triángulo</label><br>
+        <label><input type="radio" name="figura" value="rectangulo"> Rectángulo</label><br>
+        <label><input type="radio" name="figura" value="circulo"> Círculo</label><br>
+        <label><input type="radio" name="figura" value="pentagono"> Pentágono</label><br><br>
+ 
+        {{ macro.campoNuevo(form.base) }}
+        {{ macro.campoNuevo(form.altura) }}
+        {{ macro.campoNuevo(form.radio) }}
+        {{ macro.campoNuevo(form.apotema) }}
+ 
+        <button type="submit" class="btn btn-primary mt-3">Calcular</button>
+    </form>
+ 
+      <div class="mt-3">
+        <h4>{{ res }}</h4>
+    </div>
+{% endblock %}

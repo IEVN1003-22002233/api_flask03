@@ -1,4 +1,6 @@
+import math
 from flask import Flask, render_template, request
+import forms
 
 app = Flask(__name__)
 
@@ -60,7 +62,28 @@ def prueba():
     </ul>
     '''
 
-
+@app.route("/figuras", methods=['GET', 'POST'])
+def calcular_figuras():
+    form = forms.FiguraForm(request.form)
+    resultado = 0
+ 
+    if request.method == 'POST':
+        figura = request.form.get('figura')
+        base = float(request.form.get('base') or 0)
+        altura = float(request.form.get('altura') or 0)
+        radio = float(request.form.get('radio') or 0)
+        apotema = float(request.form.get('apotema') or 0)
+ 
+        if figura == "triangulo":
+            resultado = (base * altura) / 2
+        elif figura == "rectangulo":
+            resultado = base * altura
+        elif figura == "circulo":
+            resultado = math.pi * (radio ** 2)
+        elif figura == "pentagono":
+            resultado = (base * 5 * apotema) / 2
+    
+    return render_template('figuras.html', form=form, res=resultado)
 
 if __name__ == "__main__":
     app.run(debug=True)

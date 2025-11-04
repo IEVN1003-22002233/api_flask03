@@ -1,6 +1,26 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>Distancia</h1>
+{% import "_macros.html" as macro %}
+<h1>Distancia</h1>
+    <form class="form-control" action="" method="post">
+        {{ macro.campo1('x1', 'Ingrese x1', 'number') }}
+        {{ macro.campo1('y1', 'Ingrese y1', 'number') }}
+        {{ macro.campo1('x2', 'Ingrese x2', 'number') }}
+        {{ macro.campo1('y2', 'Ingrese y2', 'number') }}
+    </form>
+
 {% endblock %}
 
+{%macro campoNuevo(field)%}
+ <dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}
