@@ -1,0 +1,98 @@
+
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro %}
+ 
+<style>
+    body { background: #d9e3f2; font-family: Arial, sans-serif; }
+    .row-flex { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
+    .box { background: #b7c7db; border: 1px solid #57697d; padding: 12px; border-radius: 5px; width: 100%; margin-bottom: 10px; }
+    table { background: #fff; width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid black; padding: 6px; text-align: center; }
+    .ventas-box { background: #e8eef7; border: 1px solid #57697d; padding: 10px; border-radius: 5px; width: 35%; height: fit-content; }
+    .tabla-box { width: 65%; }
+    .btn { padding: 5px 12px; cursor: pointer; margin-top: 5px; }
+    .input-inline { flex: 1; }
+</style>
+ 
+<div class="container-fluid mt-3">
+    <div class="box">
+        <h4>Datos del Cliente y Pedido</h4>
+        <form method="POST">
+            <div class="row-flex">
+                <div class="input-inline">{{ macro.campoNuevo(form.nombre) }}</div>
+                <div class="input-inline">{{ macro.campoNuevo(form.direccion) }}</div>
+                <div class="input-inline">{{ macro.campoNuevo(form.telefono) }}</div>
+            </div>
+            <hr>
+            <div class="row-flex">
+                <div style="width:33%;">
+                    <b>Tamaño</b><br>
+                    <label><input type="radio" name="tamano" value="chica"> Chica $40</label><br>
+                    <label><input type="radio" name="tamano" value="mediana"> Mediana $80</label><br>
+                    <label><input type="radio" name="tamano" value="grande"> Grande $120</label>
+                </div>
+                <div style="width:33%;">
+                    <b>Ingredientes</b><br>
+                    {% set ingredientes_data = form.ingredientes.data or [] %}
+                    <label><input type="checkbox" name="ingredientes" value="jamon"> Jamón $10</label><br>
+                    <label><input type="checkbox" name="ingredientes" value="pina"> Piña $10</label><br>
+                    <label><input type="checkbox" name="ingredientes" value="champi"> Champiñones $10</label>
+                </div>
+                <div style="width:34%;">
+                    {{ macro.campoNuevo(form.cantidad) }}
+                    <div>
+                        <button type="submit" name="accion" value="agregar" class="btn btn-primary">Agregar Pizza</button>
+                        <button type="submit" name="accion" value="terminar" class="btn btn-success">Terminar Pedido</button>
+                        <button type="submit" name="accion" value="quitar_ultimo" class="btn btn-warning">Quitar Última Pizza</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+ 
+    <div class="row-flex">
+        <div class="tabla-box">
+            <h4>Pedido Actual</h4>
+            {% if pizzas %}
+            <table>
+                <tr>
+                    <th>Tamaño</th>
+                    <th>Ingredientes</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+                {% for p in pizzas %}
+                <tr>
+                    <td>{{ p.tamano_display }}</td>
+                    <td>{{ p.ingredientes_display }}</td>
+                    <td>{{ p.cantidad }}</td>
+                    <td>${{ p.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <p>No hay pizzas en el pedido.</p>
+            {% endif %}
+            {% if terminado %}
+            <div class="alert alert-info mt-2">
+                <b>Pedido terminado.</b>
+            </div>
+            {% endif %}
+        </div>
+ 
+        <div class="ventas-box">
+            <h4>Ventas del día</h4>
+            {% if ventas %}
+                {% for v in ventas %}
+                    <p><b>{{ v.cliente }}</b> — ${{ v.total }}</p>
+                {% endfor %}
+                <hr>
+                <p><b>Total del día:</b> ${{ total_dia }}</p>
+            {% else %}
+                <p>No hay ventas aún</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
