@@ -1,7 +1,7 @@
-import math
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory 
+from flask import make_response, jsonify
+import json
 import forms
-
 app = Flask(__name__)
 
 @app.route("/")
@@ -27,6 +27,48 @@ def operas():
 @app.route('/distancia')
 def distancia():
     return render_template('distancia.html')
+
+@app.route("/alumnos", methods=['GET', 'POST'])
+def alumnos():
+    mat=0
+    nom=""
+    ape=""
+    em=""
+    estudiantes=[]
+    datos={}
+    tem=[]
+ 
+    alumnos_clase=forms.UserForm(request.form)
+    if request.method=='POST' and alumnos_clase.validate():
+        mat=alumnos_clase.matricula.data
+        nom=alumnos_clase.nombre.data
+        ape=alumnos_clase.apellido.data
+        em=alumnos_clase.email.data
+        datos={"matricula":mat,"nombre":nom,"apellido":ape,"correo":em}
+ 
+        datos_str=request.cookies.get('estudiantes')
+        if not datos_str:
+            return "no hay cookie"
+        tem=json.loads(datos_str)
+        estudiantes=tem
+        print(type(estudiantes))
+        estudiantes.append(datos)
+       
+    response=make_response( render_template('Alumnos.html', form=alumnos_clase, mat=mat, nom=nom, ape=ape, em=em))
+ 
+    response.set_cookie('estudiantes', json.dumps(estudiantes))
+ 
+    return response
+ 
+@app.route("/get_cookie")
+def get_cookie():
+    datos_str=request.cookies.get('estudiantes')
+    if not datos_str:
+        return "No hay cookie"
+    datos=json.loads(datos_str)
+ 
+    return jsonify(datos)
+ 
 
 
 
